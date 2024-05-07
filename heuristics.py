@@ -1,3 +1,5 @@
+from ai import *
+
 def swipe_grid(grid, direction):
     temp = [0, 0, 0, 0,
             0, 0, 0, 0,
@@ -188,7 +190,7 @@ def monotonicity_heurictic(grid):
             current = next
             next += 1
 
-    return 20 * max(monotonicity_scores[0], monotonicity_scores[1]) + max(monotonicity_scores[2],
+    return max(monotonicity_scores[0], monotonicity_scores[1]) + max(monotonicity_scores[2],
                                                                           monotonicity_scores[3])
 
 
@@ -216,11 +218,16 @@ def weighted_tiles_heuristic(grid):
 
 
 # 1-dim grid!!!
-def get_score(grid):
-    empty_tiles_score = empty_tiles_heuristic(grid) * 100
-    max_value_score = max_value_heuristic(grid) * 4
-    smoothness_score = smoothness_heuristic(grid) * 10
-    monotonicity_score = monotonicity_heurictic(grid) * 60
-    weighted_tiles_score = weighted_tiles_heuristic(grid)
+def get_score(grid, weights):
+    empty_tiles_score = empty_tiles_heuristic(grid) * weights[0]
+    max_value_score = max_value_heuristic(grid) * weights[1]
+    smoothness_score = smoothness_heuristic(grid) * weights[2]
+    monotonicity_score = monotonicity_heurictic(grid) * weights[3]
+    position_of_max_value_score = position_of_max_value_heuristic(grid) * weights[4]
 
-    return smoothness_score + empty_tiles_score + monotonicity_score
+    return smoothness_score + max_value_score + empty_tiles_score + monotonicity_score + position_of_max_value_score
+
+
+
+
+

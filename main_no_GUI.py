@@ -1,9 +1,10 @@
+import ai
 from board import *
-from ai import *
+import evolutionary_algorithm
 
 board = Board(0)
 
-def single_player(num_games):
+def single_player(num_games, weights):
     for _ in range(num_games):
         game_over = False
         spawn_new = True
@@ -12,14 +13,13 @@ def single_player(num_games):
 
         run_game = True
         while run_game:
-
-            # ruch komputera - generowanie nowego pola
+            # ruch komputera-generowanie nowego pola
             if spawn_new or init_count < 2:
                 init_count += 1
                 game_over = board.random_piece()
                 spawn_new = False
-                create_minimax_tree(2, board.board_values, 0.8)
-                direction = get_move()
+                ai.create_minimax_tree(2, board.board_values, weights)
+                direction = ai.get_move()
 
             # wczytanie i wykonanie ruchu gracza
             if direction != '':
@@ -32,20 +32,9 @@ def single_player(num_games):
                 for row in board.board_values:
                     print(row)
                 print(f"Points: {board.score}\n")
-                return
-
+                return board.score
 
 
 if __name__ == "__main__":
-    num_games = int(input("Enter number of games to play automatically: "))
-    actual_game = 0
-    run = True
-    while run:
-        if actual_game < num_games:
-            actual_game %= num_games
-            actual_game += 1
-            board.clear_board_values()
-            single_player(num_games)
-            board.score = 0
-        else:
-            break
+    best_weights_result = evolutionary_algorithm.algorithm(pop_size=5, num_generations=1, num_games=2, mutation_rate=0.1)
+    print("Best weights:", best_weights_result)
